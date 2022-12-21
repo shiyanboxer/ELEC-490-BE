@@ -3,6 +3,8 @@ build/
 dist/
 *.pyc
 .coverage
+# passwords
+.env
 # This will remove our ability to add CI in the .github dir
 #.*
 .DS_Store
