@@ -57,11 +57,13 @@ def logged_in():
         # Probably here you'd want to store this somewhere -- e.g. in a database.
         strava_athlete = client.get_athlete()
         
-        types = ['time', 'heartrate', 'temp']
-        
+        types = ['time', 'latlng', 'distance', 'altitude', 'velocity_smooth', 
+        'heartrate', 'cadence', 'watts', 'temp', 'moving', 'grade_smooth']
+
          # Get all activity
          # https://developers.strava.com/docs/reference/#api-Activities-getLoggedInAthleteActivities
-        for activity in client.get_activities(after = "2010-01-01T00:00:00Z",  limit=5):
+        #  To get activities in oldest to newest, specify a value for the after argument. To get newest to oldest use before argument.
+        for activity in client.get_activities(before = "2030-01-01T00:00:00Z",  limit=10):
             print("{0.name} {0.moving_time}".format(activity))
             
             # Activities can have many streams, you can request n desired stream types
@@ -74,7 +76,7 @@ def logged_in():
         return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
 
 
-@app.route("/get_activity")
+@app.route("/activity")
 def get_activity():
     client = Client()
     
@@ -89,6 +91,11 @@ def get_activity():
         if 'heartrate' in stream.keys():
             print(stream['heartrate'].data)
             
+    return
+
+
+@app.route("/predict")
+def predict():
     return
 
 if __name__ == '__main__':
