@@ -1,4 +1,6 @@
-# Welcome to stravalib
+This repository was forked from [stravalib](https://stravalib.readthedocs.io/) 
+
+# stravalib + ELEC 490 Backend APIs
 [![DOI](https://zenodo.org/badge/8828908.svg)](https://zenodo.org/badge/latestdoi/8828908) 
 ![PyPI](https://img.shields.io/pypi/v/stravalib?style=plastic) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/stravalib?style=plastic) [![Documentation Status](https://readthedocs.org/projects/stravalib/badge/?version=latest)](https://stravalib.readthedocs.io/en/latest/?badge=latest) ![Package Tests Status](https://github.com/stravalib/stravalib/actions/workflows/build-test.yml/badge.svg) ![PyPI - Downloads](https://img.shields.io/pypi/dm/stravalib?style=plastic) [![codecov](https://codecov.io/gh/stravalib/stravalib/branch/master/graph/badge.svg?token=sHbFJn7epy)](https://codecov.io/gh/stravalib/stravalib)
 
@@ -23,35 +25,6 @@ The package is available on PyPI to be installed using `easy_install` or `pip`:
 
 `pip install stravalib`
 
-## How to Contribute to Stravalib
-
-### Get Started!
-
-Ready to contribute? Here's how to set up Stravalib for local development.
-
-1. Fork the repository on GitHub
---------------------------------
-
-To create your own copy of the repository on GitHub, navigate to the
-`hozn/stravalib <https://github.com/hozn/stravalib>`_ repository
-and click the **Fork** button in the top-right corner of the page.
-
-2. Clone your fork locally
---------------------------
-
-Use ``git clone`` to get a local copy of your stravalib repository on your
-local filesystem::
-
-    $ git clone git@github.com:your_name_here/stravalib.git
-    $ cd stravalib/
-
-3. Set up your fork for local development
------------------------------------------
-The docs for this library are created using `sphinx`.
-To build the html version of the documentation, use the 
-command:
-
-`$ make -C docs html`
 
 ### Building from sources
 
@@ -203,7 +176,3 @@ num_value = float(unithelper.miles(activity.distance))
 # Or:
 num_value = unithelper.miles(activity.distance).num
 ```
-
-## Still reading?
-
-The [published sphinx documentation](https://stravalib.readthedocs.io/) provides much more.
