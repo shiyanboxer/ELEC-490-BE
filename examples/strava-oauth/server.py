@@ -2,17 +2,33 @@
 import logging
 
 from flask import Flask, render_template, redirect, url_for, request, jsonify
+
+# Enviroment variables 
+# https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
+import os
+from dotenv import load_dotenv
+
 from stravalib import Client
 
 app = Flask(__name__)
-app.config.from_envvar('APP_SETTINGS')
+# app.config.from_envvar('APP_SETTINGS')
+load_dotenv()
+
+STRAVA_CLIENT_ID = os.getenv('STRAVA_CLIENT_ID')
+STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
 
 @app.route("/")
 def login():
     c = Client()
-    url = c.authorization_url(client_id=app.config['STRAVA_CLIENT_ID'],
-                              redirect_uri=url_for('.logged_in', _external=True),
-                              approval_prompt='auto')
+    # url = c.authorization_url(client_id=app.config['STRAVA_CLIENT_ID'],
+    #                           redirect_uri=url_for('.logged_in', _external=True),
+    #                           approval_prompt='auto')
+
+    url = c.authorization_url(
+        client_id=STRAVA_CLIENT_ID,
+        redirect_uri=url_for('.logged_in',
+        _external=True),
+        approval_prompt='auto')
     return render_template('login.html', authorize_url=url)
 
 
@@ -31,9 +47,11 @@ def logged_in():
     else:
         code = request.args.get('code')
         client = Client()
-        access_token = client.exchange_code_for_token(client_id=app.config['STRAVA_CLIENT_ID'],
-                                                      client_secret=app.config['STRAVA_CLIENT_SECRET'],
-                                                      code=code)
+        access_token = client.exchange_code_for_token(
+            client_id=STRAVA_CLIENT_ID,
+            client_secret=STRAVA_CLIENT_SECRET,
+            code=code)
+        
         # Probably here you'd want to store this somewhere -- e.g. in a database.
         strava_athlete = client.get_athlete()
 
