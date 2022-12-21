@@ -23,7 +23,7 @@ and quantities through the [Python Pint library](https://pypi.org/project/Pint/)
 
 The package is available on PyPI to be installed using `easy_install` or `pip`:
 
-`pip install stravalib`
+`pip3 install stravalib`
 
 
 ### Building from sources
@@ -32,13 +32,20 @@ To build the project locally in editable mode,
 access the project root directory and run:
 
 ```bash
-$ pip install -e .
+$ pip3 install -e .
 ```
 
 To execute **unit - or integration tests** you will need to run
 
 ```bash
 $ make test
+```
+
+More steps https://pypi.org/project/python-dotenv/
+
+```
+pip3 install python-dotenv
+python server.py
 ```
 
 ## Local Tests 
