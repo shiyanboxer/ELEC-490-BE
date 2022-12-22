@@ -80,12 +80,15 @@ def logged_in():
 def get_activity():
     client = Client()
     
+    types = ['time', 'latlng', 'distance', 'altitude', 'velocity_smooth', 
+    'heartrate', 'cadence', 'watts', 'temp', 'moving', 'grade_smooth']
+
     # Get all activity
     for activity in client.get_activities(after = "2010-01-01T00:00:00Z",  limit=5):
         print("{0.name} {0.moving_time}".format(activity))
         
         # Activities can have many streams, you can request n desired stream types
-        stream = client.get_activity_streams(activity.id, types=types, resolution='medium')
+        stream = client.get_activity_streams(activity.id, types=types, resolution='high')
 
         # Result is a dictionary object.  The dict's key are the stream type.
         if 'heartrate' in stream.keys():
