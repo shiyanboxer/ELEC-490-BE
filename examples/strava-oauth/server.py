@@ -128,7 +128,7 @@ def predict():
 
     # x_test = np.array([hrv]) # Create a X_test variable of the user's input
     # prediction = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
-    # prediction_response = json.dumps({'response': np.around(prediction[0], 0)}) # Dump the result to be sent back to the frontend
+    # prediction_response = json.dumps({'prediction_response': np.around(prediction[0], 0)}) # Dump the result to be sent back to the frontend
     
     # TODO: concatenate all response and return
     # return response
