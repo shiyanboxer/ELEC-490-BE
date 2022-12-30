@@ -23,8 +23,8 @@ cors = CORS(app)
 
 load_dotenv()
 
-STRAVA_CLIENT_ID = os.getenv('STRAVA_CLIENT_ID')
-STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
+STRAVA_CLIENT_ID = os.environ.get('STRAVA_CLIENT_ID')
+STRAVA_CLIENT_SECRET= os.environ.get('STRAVA_CLIENT_SECRET')
 
 # Global client object
 client = Client()
