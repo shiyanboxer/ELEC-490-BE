@@ -1,7 +1,9 @@
 # Strava tokens https://www.strava.com/settings/api
 
 #!flask/bin/python
+from datetime import datetime, timezone, timedelta
 import logging
+import re
 import time
 
 from flask import Flask, render_template, redirect, url_for, request, jsonify
@@ -97,42 +99,65 @@ def load_models():
 
 @app.route("/predict", methods=["POST"])
 def predict():
+    response = {}
+    
     types = ['time', 'latlng', 'distance', 'altitude', 'velocity_smooth', 
     'heartrate', 'cadence', 'watts', 'temp', 'moving', 'grade_smooth']
 
     # Get all activity
     # https://developers.strava.com/docs/reference/#api-Activities-getLoggedInAthleteActivities
     # To get activities in oldest to newest, specify a value for the after argument. To get newest to oldest use before argument.
-    activity_response = []
-    heartrate_response = []
+    activity_response_array = []
+    heartrate_response_array = []
+    
+    one_week_ago = datetime.now(timezone.utc) - timedelta(days=7)
+    one_week_ago = str(one_week_ago.strftime('%Y-%m-%dT%H:%M:%SZ'))
 
-    for activity in client.get_activities(after = "2010-01-01T00:00:00Z",  limit=10):
-        print("{0.name} {0.moving_time}".format(activity))
-        activity_response.append("{0.name} {0.moving_time}".format(activity))
+    total_hour, total_min, total_sec = 0, 0, 0
+
+    for activity in client.get_activities(after = one_week_ago, limit=10):
+        print("{0.moving_time}".format(activity))
+        activity_response_array.append("{0.name} {0.moving_time}".format(activity))
+        [hour, min, sec] = "{0.moving_time}".format(activity).split(":")
+        total_hour += int(hour)
+        total_min += int(min)
+        total_sec += int(sec)
+        weekly_training_time= str(timedelta(seconds=total_sec, minutes=total_min, hours=total_hour))
         
         # Activities can have many streams, you can request n desired stream types
         stream = client.get_activity_streams(activity.id, types=types, resolution='high')
 
         # Result is a dictionary object.  The dict's key are the stream type.
+        total_bmp = 0
+        count = 0
         if 'heartrate' in stream.keys():
+            for bpm in stream['heartrate'].data:
+                total_bmp += bpm
+                count += 1
             print(stream['heartrate'].data)
-            heartrate_response.append(stream['heartrate'].data)
-            
+            heartrate_response_array.append(round(total_bmp/count))
+    
+    response['heartrate_response'] = heartrate_response_array[-1] if heartrate_response_array else 0
+    response['activity_response'] = activity_response_array
+    response['weekly_training_time_response'] = weekly_training_time
+
     model = load_models() # Get an instance of the model calling the load_models()
     data = json.loads(request.data) # Load the request from the user and store in the variable "data"
-    hrv = int(data['hrv'])
+    hrv = data['hrv']
 
     # Raises a 400 error if invalid input
-    # if type(data['hrv']) != int:
-    #     return 'User entered invalid input type', 400
+    if not hrv.isdigit():
+        return 'User entered invalid input type', 400
 
-    # x_test = np.array([hrv]) # Create a X_test variable of the user's input
-    # prediction = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
-    # prediction_response = json.dumps({'prediction_response': np.around(prediction[0], 0)}) # Dump the result to be sent back to the frontend
+    response['hrv'] = int(hrv)
+
+    x_test = np.array([hrv]) # Create a X_test variable of the user's input
+    recovery_score = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
+    response['recovery_score'] = recovery_score # Dump the result to be sent back to the frontend
     
-    # TODO: concatenate all response and return
-    # return response
-    return json.dumps(hrv)
+    response = json.dumps(response)
+
+    return json.dumps(response)
 
 if __name__ == '__main__':
     app.run(debug=True)
