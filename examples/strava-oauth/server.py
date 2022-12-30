@@ -80,8 +80,8 @@ def logged_in():
         #     expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
-        dashboard = 'http://localhost:3000/dashboard/app'
+        # dashboard = 'http://localhost:3000/dashboard/app'
+        dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
         
 
@@ -113,7 +113,7 @@ def predict():
     one_week_ago = datetime.now(timezone.utc) - timedelta(days=7)
     one_week_ago = str(one_week_ago.strftime('%Y-%m-%dT%H:%M:%SZ'))
 
-    total_hour, total_min, total_sec = 0, 0, 0
+    total_hour, total_min, total_sec, weekly_training_time = 0, 0, 0, 0
 
     for activity in client.get_activities(after = one_week_ago, limit=10):
         print("{0.moving_time}".format(activity))
