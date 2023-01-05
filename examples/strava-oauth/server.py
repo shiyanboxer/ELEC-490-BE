@@ -1,5 +1,4 @@
 # Strava tokens https://www.strava.com/settings/api
-
 #!flask/bin/python
 from datetime import datetime, timezone, timedelta
 import logging
@@ -23,8 +22,13 @@ cors = CORS(app)
 
 load_dotenv()
 
-STRAVA_CLIENT_ID = os.environ.get('STRAVA_CLIENT_ID')
-STRAVA_CLIENT_SECRET= os.environ.get('STRAVA_CLIENT_SECRET')
+STRAVA_CLIENT_ID=98820
+STRAVA_CLIENT_SECRET='e7ee484661cc7f1c9fd0e5974f137b8b9ec1314b'
+STRAVA_ACCESS_TOKEN='ac8c8989ce6c2ebb3bbedaa23e966a08e813f0f2'
+STRAVA_REFRESH_TOKEN='1a266912e21a6c5ee7c248d5f9e674040b44c332'
+
+# STRAVA_CLIENT_ID = os.environ.get('STRAVA_CLIENT_ID')
+# STRAVA_CLIENT_SECRET= os.environ.get('STRAVA_CLIENT_SECRET')
 
 # Global client object
 client = Client()
@@ -33,11 +37,9 @@ client = Client()
 def login():
     url = client.authorization_url(
         client_id=STRAVA_CLIENT_ID,
-        redirect_uri=url_for('.logged_in',
-        _external=True),
+        redirect_uri=url_for('.logged_in', _external=True),
         approval_prompt='auto')
     return render_template('login.html', authorize_url=url)
-
 
 @app.route("/strava-oauth")
 def logged_in():
@@ -58,7 +60,6 @@ def logged_in():
             client_secret=STRAVA_CLIENT_SECRET,
             code=code)
         access_token = token_response['access_token']
-        refresh_token = token_response['refresh_token']
         expires_at = token_response['expires_at']
 
         # Now store that short-lived access token somewhere (a database?)
@@ -72,12 +73,12 @@ def logged_in():
         strava_athlete = client.get_athlete()
         
         # If token expires
-        # if time.time() > client.expires_at:
-        #     refresh_response = client.refresh_access_token(client_id=1234, client_secret='asdf1234',
-        #         refresh_token=client.refresh_token)
-        #     access_token = refresh_response['access_token']
-        #     refresh_token = refresh_response['refresh_token']
-        #     expires_at = refresh_response['expires_at']
+        if time.time() > expires_at:
+            refresh_response = client.refresh_access_token(client_id=STRAVA_CLIENT_ID, client_secret=STRAVA_CLIENT_SECRET,
+                refresh_token= STRAVA_REFRESH_TOKEN)
+            access_token = refresh_response['access_token']
+            refresh_token = refresh_response['refresh_token']
+            expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
         # dashboard = 'http://localhost:3000/dashboard/app'
@@ -155,7 +156,10 @@ def predict():
     # recovery_score = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
     response['recovery_score'] = 23 # Dump the result to be sent back to the frontend
     
+    # response['recover_recommendation']
+
     response = json.dumps(response)
+    print(response)
 
     return json.dumps(response)
 
