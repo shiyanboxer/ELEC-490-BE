@@ -1,4 +1,5 @@
-# Strava tokens https://www.strava.com/settings/api
+#  git subtree push --prefix examples/strava-oauth heroku main
+ # Strava tokens https://www.strava.com/settings/api
 #!flask/bin/python
 from datetime import datetime, timezone, timedelta
 import logging
@@ -22,13 +23,13 @@ cors = CORS(app)
 
 load_dotenv()
 
-STRAVA_CLIENT_ID=98820
-STRAVA_CLIENT_SECRET='e7ee484661cc7f1c9fd0e5974f137b8b9ec1314b'
-STRAVA_ACCESS_TOKEN='ac8c8989ce6c2ebb3bbedaa23e966a08e813f0f2'
+# STRAVA_CLIENT_ID=98820
+# STRAVA_CLIENT_SECRET='e7ee484661cc7f1c9fd0e5974f137b8b9ec1314b'
+# STRAVA_ACCESS_TOKEN='ac8c8989ce6c2ebb3bbedaa23e966a08e813f0f2'
 STRAVA_REFRESH_TOKEN='1a266912e21a6c5ee7c248d5f9e674040b44c332'
 
-# STRAVA_CLIENT_ID = os.environ.get('STRAVA_CLIENT_ID')
-# STRAVA_CLIENT_SECRET= os.environ.get('STRAVA_CLIENT_SECRET')
+STRAVA_CLIENT_ID = os.environ.get('STRAVA_CLIENT_ID')
+STRAVA_CLIENT_SECRET= os.environ.get('STRAVA_CLIENT_SECRET')
 
 # Global client object
 client = Client()
@@ -74,8 +75,11 @@ def logged_in():
         
         # If token expires
         if time.time() > expires_at:
-            refresh_response = client.refresh_access_token(client_id=STRAVA_CLIENT_ID, client_secret=STRAVA_CLIENT_SECRET,
-                refresh_token= STRAVA_REFRESH_TOKEN)
+            refresh_response = client.refresh_access_token(
+                client_id=STRAVA_CLIENT_ID,
+                client_secret=STRAVA_CLIENT_SECRET,
+                refresh_token= STRAVA_REFRESH_TOKEN
+            )
             access_token = refresh_response['access_token']
             refresh_token = refresh_response['refresh_token']
             expires_at = refresh_response['expires_at']
