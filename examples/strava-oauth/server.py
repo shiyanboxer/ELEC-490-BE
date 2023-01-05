@@ -1,5 +1,6 @@
-#  git subtree push --prefix examples/strava-oauth heroku main
- # Strava tokens https://www.strava.com/settings/api
+# git subtree push --prefix examples/strava-oauth heroku main
+# Strava tokens https://www.strava.com/settings/api
+# Env vars https://devcenter.heroku.com/articles/config-vars
 #!flask/bin/python
 from datetime import datetime, timezone, timedelta
 import logging
@@ -27,7 +28,6 @@ load_dotenv()
 # STRAVA_CLIENT_SECRET='e7ee484661cc7f1c9fd0e5974f137b8b9ec1314b'
 # STRAVA_ACCESS_TOKEN='ac8c8989ce6c2ebb3bbedaa23e966a08e813f0f2'
 STRAVA_REFRESH_TOKEN='1a266912e21a6c5ee7c248d5f9e674040b44c332'
-
 STRAVA_CLIENT_ID = os.environ.get('STRAVA_CLIENT_ID')
 STRAVA_CLIENT_SECRET= os.environ.get('STRAVA_CLIENT_SECRET')
 
@@ -66,23 +66,18 @@ def logged_in():
         # Now store that short-lived access token somewhere (a database?)
         client.access_token = access_token
 
-        # You must also store the refresh token to be used later on to obtain another valid access token
-        # in case the current is already expired
-        # client.refresh_token = refresh_token
-
         # Probably here you'd want to store this somewhere -- e.g. in a database.
         strava_athlete = client.get_athlete()
         
         # If token expires
-        if time.time() > expires_at:
-            refresh_response = client.refresh_access_token(
-                client_id=STRAVA_CLIENT_ID,
-                client_secret=STRAVA_CLIENT_SECRET,
-                refresh_token= STRAVA_REFRESH_TOKEN
-            )
-            access_token = refresh_response['access_token']
-            refresh_token = refresh_response['refresh_token']
-            expires_at = refresh_response['expires_at']
+        # if time.time() > expires_at:
+        #     refresh_response = client.refresh_access_token(
+        #         client_id=STRAVA_CLIENT_ID,
+        #         client_secret=STRAVA_CLIENT_SECRET,
+        #         refresh_token= STRAVA_REFRESH_TOKEN
+        #     )
+        #     access_token = refresh_response['access_token']
+        #     expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
         # dashboard = 'http://localhost:3000/dashboard/app'
