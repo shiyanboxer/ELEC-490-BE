@@ -15,7 +15,7 @@ import json
 import numpy as np
 # Enviroment variables - https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
 import os
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from stravalib import Client
 # Run FE and BE servers at once
 from flask_cors import CORS
@@ -23,14 +23,14 @@ from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app) 
 
-# load_dotenv()
+load_dotenv()
 
-STRAVA_CLIENT_ID=98820
-STRAVA_CLIENT_SECRET='e7ee484661cc7f1c9fd0e5974f137b8b9ec1314b'
-STRAVA_ACCESS_TOKEN='ac8c8989ce6c2ebb3bbedaa23e966a08e813f0f2'
+# STRAVA_CLIENT_ID=98820
+# STRAVA_CLIENT_SECRET='e7ee484661cc7f1c9fd0e5974f137b8b9ec1314b'
+# STRAVA_ACCESS_TOKEN='ac8c8989ce6c2ebb3bbedaa23e966a08e813f0f2'
 STRAVA_REFRESH_TOKEN='1a266912e21a6c5ee7c248d5f9e674040b44c332'
-# STRAVA_CLIENT_ID = os.getenv('STRAVA_CLIENT_ID')
-# STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
+STRAVA_CLIENT_ID = os.getenv('STRAVA_CLIENT_ID')
+STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
 # STRAVA_CLIENT_ID = os.environ.get('STRAVA_CLIENT_ID')
 # STRAVA_CLIENT_SECRET= os.environ.get('STRAVA_CLIENT_SECRET')
 
