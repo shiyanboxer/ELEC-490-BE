@@ -95,10 +95,10 @@ def logged_in():
         #     access_token = refresh_response['access_token']
         #     expires_at = refresh_response['expires_at']
 
-        return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
+        # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
         # dashboard = 'http://localhost:3000/dashboard/app'
-        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
-        # return redirect(dashboard)
+        dashboard = 'https://elec49x.netlify.app/dashboard/app'
+        return redirect(dashboard)
         
 
 def load_models():
