@@ -43,6 +43,13 @@ def login():
         client_id=STRAVA_CLIENT_ID,
         redirect_uri=url_for('.logged_in', _external=True),
         approval_prompt='auto')
+    
+    print('URL HERE')
+    print(url)
+
+    # https://www.strava.com/oauth/authorize?client_id=98820&redirect_uri=http%3A%2F%2F127.0.0.1%3A5000%2Fstrava-oauth&approval_prompt=auto&response_type=code&scope=read%2Cactivity%3Aread
+    # https://www.strava.com/oauth/authorize?client_id=98820&redirect_uri=https%3A%2F%2Felec49x.herokuapp.com%2Fstrava-oauth&approval_prompt=auto&response_type=code&scope=read%2Cactivity%3Aread
+    
     return render_template('login.html', authorize_url=url)
 
 @app.route("/strava-oauth")
@@ -53,6 +60,10 @@ def logged_in():
     - code
     - error
     """
+
+    print('In internal strava oauth')
+    print(request.args.get('code'))
+
     error = request.args.get('error')
     state = request.args.get('state')
     if error:
@@ -82,10 +93,10 @@ def logged_in():
         #     access_token = refresh_response['access_token']
         #     expires_at = refresh_response['expires_at']
 
-        # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
+        return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
         # dashboard = 'http://localhost:3000/dashboard/app'
-        dashboard = 'https://elec49x.netlify.app/dashboard/app'
-        return redirect(dashboard)
+        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
+        # return redirect(dashboard)
         
 
 def load_models():
