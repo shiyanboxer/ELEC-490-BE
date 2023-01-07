@@ -1,3 +1,5 @@
+# https://www.reddit.com/r/Strava/comments/k1ka4w/strava_api_redirect_uri_and_callbackurlscheme/
+
 # git subtree push --prefix examples/strava-oauth heroku main
 # Strava tokens https://www.strava.com/settings/api
 # Env vars https://devcenter.heroku.com/articles/config-vars
@@ -49,7 +51,7 @@ def login():
 
     # https://www.strava.com/oauth/authorize?client_id=98820&redirect_uri=http%3A%2F%2F127.0.0.1%3A5000%2Fstrava-oauth&approval_prompt=auto&response_type=code&scope=read%2Cactivity%3Aread
     # https://www.strava.com/oauth/authorize?client_id=98820&redirect_uri=https%3A%2F%2Felec49x.herokuapp.com%2Fstrava-oauth&approval_prompt=auto&response_type=code&scope=read%2Cactivity%3Aread
-    
+    # https://www.strava.com/oauth/authorize?client_id=98820&redirect_uri=https%3A%2F%2Felec49x.herokuapp.com%2Fstrava-oauth&approval_prompt=auto&response_type=code&scope=read%2Cactivity%3Aread
     return render_template('login.html', authorize_url=url)
 
 @app.route("/strava-oauth")
