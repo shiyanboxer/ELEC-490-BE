@@ -1,5 +1,6 @@
+# Issues with deployment to Heroku - change Authorization Callback Domain in Strava API settings
 # https://www.reddit.com/r/Strava/comments/k1ka4w/strava_api_redirect_uri_and_callbackurlscheme/
-
+# https://groups.google.com/g/strava-api/c/4NvcU1iaV6w
 # git subtree push --prefix examples/strava-oauth heroku main
 # Strava tokens https://www.strava.com/settings/api
 # Env vars https://devcenter.heroku.com/articles/config-vars
@@ -27,14 +28,9 @@ cors = CORS(app)
 
 load_dotenv()
 
-# STRAVA_CLIENT_ID=98820
-# STRAVA_CLIENT_SECRET='e7ee484661cc7f1c9fd0e5974f137b8b9ec1314b'
-# STRAVA_ACCESS_TOKEN='ac8c8989ce6c2ebb3bbedaa23e966a08e813f0f2'
-STRAVA_REFRESH_TOKEN='1a266912e21a6c5ee7c248d5f9e674040b44c332'
+STRAVA_REFRESH_TOKEN=os.getenv('STRAVA_REFRESH_TOKEN')
 STRAVA_CLIENT_ID = os.getenv('STRAVA_CLIENT_ID')
 STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
-# STRAVA_CLIENT_ID = os.environ.get('STRAVA_CLIENT_ID')
-# STRAVA_CLIENT_SECRET= os.environ.get('STRAVA_CLIENT_SECRET')
 
 # Global client object
 client = Client()
@@ -45,13 +41,6 @@ def login():
         client_id=STRAVA_CLIENT_ID,
         redirect_uri=url_for('.logged_in', _external=True),
         approval_prompt='auto')
-    
-    print('URL HERE')
-    print(url)
-
-    # https://www.strava.com/oauth/authorize?client_id=98820&redirect_uri=http%3A%2F%2F127.0.0.1%3A5000%2Fstrava-oauth&approval_prompt=auto&response_type=code&scope=read%2Cactivity%3Aread
-    # https://www.strava.com/oauth/authorize?client_id=98820&redirect_uri=https%3A%2F%2Felec49x.herokuapp.com%2Fstrava-oauth&approval_prompt=auto&response_type=code&scope=read%2Cactivity%3Aread
-    # https://www.strava.com/oauth/authorize?client_id=98820&redirect_uri=https%3A%2F%2Felec49x.herokuapp.com%2Fstrava-oauth&approval_prompt=auto&response_type=code&scope=read%2Cactivity%3Aread
     return render_template('login.html', authorize_url=url)
 
 @app.route("/strava-oauth")
@@ -62,10 +51,6 @@ def logged_in():
     - code
     - error
     """
-
-    print('In internal strava oauth')
-    print(request.args.get('code'))
-
     error = request.args.get('error')
     state = request.args.get('state')
     if error:
