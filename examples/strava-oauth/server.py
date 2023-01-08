@@ -165,13 +165,13 @@ def predict():
     # model = load_models() # Get an instance of the model calling the load_models()
     # data = json.loads(request.data) # Load the request from the user and store in the variable "data"
     # hrv = data['hrv']
-    hrv = 23
 
     # Raises a 400 error if invalid input
-    if not hrv.isdigit():
-        return 'User entered invalid input type', 400
+    # if not hrv.isdigit():
+    #     return 'User entered invalid input type', 400
 
-    response['hrv'] = int(hrv)
+    # response['hrv'] = int(hrv)
+    response['hrv'] = 36
 
     # x_test = np.array([hrv]) # Create a X_test variable of the user's input
     # recovery_score = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
