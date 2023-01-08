@@ -35,6 +35,9 @@ STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
 # Global client object
 client = Client()
 
+# Session cookies
+session = {}
+
 @app.route("/")
 def login():
     url = client.authorization_url(
@@ -66,9 +69,16 @@ def logged_in():
 
         # Now store that short-lived access token somewhere (a database?)
         client.access_token = access_token
+        # Store the access token in a session cookie
+        session['access_token'] = access_token
+        session['expires_at'] = expires_at
+        
+        print('AOTHER')
+        print(access_token)
 
         # Probably here you'd want to store this somewhere -- e.g. in a database.
         strava_athlete = client.get_athlete()
+        print(strava_athlete)
         
         # If token expires
         # if time.time() > expires_at:
@@ -81,8 +91,8 @@ def logged_in():
         #     expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        # dashboard = 'http://localhost:3000/dashboard/app'
-        dashboard = 'https://elec49x.netlify.app/dashboard/app'
+        dashboard = 'http://localhost:3000/dashboard/app'
+        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
         
 
@@ -99,7 +109,15 @@ def load_models():
 
 
 @app.route("/predict", methods=["POST"])
-def predict():
+def predict():    
+    # Retrieve the access token from the session cookie
+    access_token = session.get('access_token')
+    if access_token is None:
+        return 'Access token not found', 400
+
+    # Set the access token on the client object
+    client.access_token = access_token
+
     response = {}
     
     types = ['time', 'latlng', 'distance', 'altitude', 'velocity_smooth', 
