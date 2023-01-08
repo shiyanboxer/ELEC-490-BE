@@ -72,13 +72,9 @@ def logged_in():
         # Store the access token in a session cookie
         session['access_token'] = access_token
         session['expires_at'] = expires_at
-        
-        print('AOTHER')
-        print(access_token)
 
         # Probably here you'd want to store this somewhere -- e.g. in a database.
         strava_athlete = client.get_athlete()
-        print(strava_athlete)
         
         # If token expires
         # if time.time() > expires_at:
