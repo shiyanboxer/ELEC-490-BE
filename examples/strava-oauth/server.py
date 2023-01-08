@@ -87,21 +87,21 @@ def logged_in():
         #     expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        # dashboard = 'http://localhost:3000/dashboard/app'
-        dashboard = 'https://elec49x.netlify.app/dashboard/app'
+        dashboard = 'http://localhost:3000/dashboard/app'
+        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
         
 
-def load_models():
-    """"
-    Take the pickled model file, and open and load it into a variable called "model" 
-    Return: "model", an object of our model
-    """
-    file_name = "examples/strava-oauth/model_file.p"
-    with open(file_name, 'rb') as pickled:
-        data = pickle.load(pickled)
-        model = data['model']
-    return model  
+# def load_models():
+#     """"
+#     Take the pickled model file, and open and load it into a variable called "model" 
+#     Return: "model", an object of our model
+#     """
+#     file_name = "examples/strava-oauth/model_file.p"
+#     with open(file_name, 'rb') as pickled:
+#         data = pickle.load(pickled)
+#         model = data['model']
+#     return model  
 
 
 @app.route("/predict", methods=["POST"])
@@ -111,8 +111,14 @@ def predict():
     if access_token is None:
         return 'Access token not found', 400
 
+    print('ACCESS TOKEN')
+    print(access_token)
+
     # Set the access token on the client object
     client.access_token = access_token
+    
+    print('ACCESS TOKEN CLIENT')
+    print(client.access_token)
 
     response = {}
     
@@ -156,9 +162,10 @@ def predict():
     response['activity_response'] = activity_response_array
     response['weekly_training_time_response'] = weekly_training_time
 
-    model = load_models() # Get an instance of the model calling the load_models()
-    data = json.loads(request.data) # Load the request from the user and store in the variable "data"
-    hrv = data['hrv']
+    # model = load_models() # Get an instance of the model calling the load_models()
+    # data = json.loads(request.data) # Load the request from the user and store in the variable "data"
+    # hrv = data['hrv']
+    hrv = 23
 
     # Raises a 400 error if invalid input
     if not hrv.isdigit():
