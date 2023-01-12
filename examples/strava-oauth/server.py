@@ -10,7 +10,7 @@ from datetime import datetime, timezone, timedelta
 import logging
 import re
 import time
-
+import collections
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 import pickle
 import json
@@ -36,7 +36,7 @@ STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
 client = Client()
 
 # Session cookies
-session = {}
+session = collections.defaultdict()
 
 @app.route("/")
 def login():
@@ -75,6 +75,8 @@ def logged_in():
 
         # Probably here you'd want to store this somewhere -- e.g. in a database.
         strava_athlete = client.get_athlete()
+        session['first_name'] = strava_athlete.firstname
+        session['last_name'] = strava_athlete.lastname
         
         # If token expires
         # if time.time() > expires_at:
@@ -91,6 +93,13 @@ def logged_in():
         dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
         
+@app.route("/user")
+def get_user():
+    user = {
+        'first_name': session.get('first_name', 'asdf'), 
+        'last_name': session.get('last_name', 'asdf')
+    }
+    return jsonify(user)
 
 # def load_models():
 #     """"
