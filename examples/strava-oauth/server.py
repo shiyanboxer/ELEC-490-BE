@@ -96,9 +96,10 @@ def logged_in():
 @app.route("/user")
 def get_user():
     user = {
-        'first_name': session.get('first_name', 'asdf'), 
-        'last_name': session.get('last_name', 'asdf')
+        'first_name': session.get('first_name', 'Fake'), 
+        'last_name': session.get('last_name', 'Name')
     }
+    # print(user)
     return jsonify(user)
 
 # def load_models():
@@ -120,14 +121,14 @@ def predict():
     if access_token is None:
         return 'Access token not found', 400
 
-    print('ACCESS TOKEN')
-    print(access_token)
+    # print('ACCESS TOKEN')
+    # print(access_token)
 
     # Set the access token on the client object
     client.access_token = access_token
     
-    print('ACCESS TOKEN CLIENT')
-    print(client.access_token)
+    # print('ACCESS TOKEN CLIENT')
+    # print(client.access_token)
 
     response = {}
     
