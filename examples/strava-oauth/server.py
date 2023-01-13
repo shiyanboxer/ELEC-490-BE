@@ -149,11 +149,12 @@ def predict():
     for activity in client.get_activities(after = one_week_ago, limit=10):
         print("{0.moving_time}".format(activity))
         activity_response_array.append("{0.name} {0.moving_time}".format(activity))
+
         [hour, min, sec] = "{0.moving_time}".format(activity).split(":")
         total_hour += int(hour)
         total_min += int(min)
         total_sec += int(sec)
-        weekly_training_time= str(timedelta(seconds=total_sec, minutes=total_min, hours=total_hour))
+        weekly_training_time = hour
         
         # Activities can have many streams, you can request n desired stream types
         stream = client.get_activity_streams(activity.id, types=types, resolution='high')
