@@ -48,12 +48,6 @@ def login():
 
 @app.route("/strava-oauth")
 def logged_in():
-    """
-    Method called by Strava (redirect) that includes parameters.
-    - state
-    - code
-    - error
-    """
     error = request.args.get('error')
     state = request.args.get('state')
     if error:
@@ -99,7 +93,6 @@ def get_user():
         'first_name': session.get('first_name', 'Fake'), 
         'last_name': session.get('last_name', 'Name')
     }
-    # print(user)
     return jsonify(user)
 
 # def load_models():
@@ -121,14 +114,8 @@ def predict():
     if access_token is None:
         return 'Access token not found', 400
 
-    # print('ACCESS TOKEN')
-    # print(access_token)
-
     # Set the access token on the client object
     client.access_token = access_token
-    
-    # print('ACCESS TOKEN CLIENT')
-    # print(client.access_token)
 
     response = {}
     
@@ -147,7 +134,7 @@ def predict():
     total_hour, total_min, total_sec, weekly_training_time = 0, 0, 0, 0
 
     for activity in client.get_activities(after = one_week_ago, limit=10):
-        print("{0.moving_time}".format(activity))
+        # print("{0.moving_time}".format(activity))
         activity_response_array.append("{0.name} {0.moving_time}".format(activity))
 
         [hour, min, sec] = "{0.moving_time}".format(activity).split(":")
@@ -166,7 +153,7 @@ def predict():
             for bpm in stream['heartrate'].data:
                 total_bmp += bpm
                 count += 1
-            print(stream['heartrate'].data)
+            # print(stream['heartrate'].data)
             heartrate_response_array.append(round(total_bmp/count))
     
     response['heartrate_response'] = heartrate_response_array[-1] if heartrate_response_array else 0
