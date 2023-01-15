@@ -6,6 +6,7 @@
 # Env vars https://devcenter.heroku.com/articles/config-vars
 # https://dev.to/vulcanwm/environment-variables-in-heroku-python-385o
 #!flask/bin/python
+
 from datetime import datetime, timezone, timedelta
 import logging
 import re
@@ -73,14 +74,14 @@ def logged_in():
         session['last_name'] = strava_athlete.lastname
         
         # If token expires
-        # if time.time() > expires_at:
-        #     refresh_response = client.refresh_access_token(
-        #         client_id=STRAVA_CLIENT_ID,
-        #         client_secret=STRAVA_CLIENT_SECRET,
-        #         refresh_token= STRAVA_REFRESH_TOKEN
-        #     )
-        #     access_token = refresh_response['access_token']
-        #     expires_at = refresh_response['expires_at']
+        if time.time() > expires_at:
+            refresh_response = client.refresh_access_token(
+                client_id=STRAVA_CLIENT_ID,
+                client_secret=STRAVA_CLIENT_SECRET,
+                refresh_token= STRAVA_REFRESH_TOKEN
+            )
+            access_token = refresh_response['access_token']
+            expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
         # dashboard = 'http://localhost:3000/dashboard/app'
@@ -133,6 +134,7 @@ def predict():
 
     total_hour, total_min, total_sec, weekly_training_time = 0, 0, 0, 0
 
+    # TODO
     for activity in client.get_activities(after = one_week_ago, limit=10):
         # print("{0.moving_time}".format(activity))
         activity_response_array.append("{0.name} {0.moving_time}".format(activity))
