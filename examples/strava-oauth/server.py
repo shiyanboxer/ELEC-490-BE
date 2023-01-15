@@ -84,8 +84,8 @@ def logged_in():
             expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        # dashboard = 'http://localhost:3000/dashboard/app'
-        dashboard = 'https://elec49x.netlify.app/dashboard/app'
+        dashboard = 'http://localhost:3000/dashboard/app'
+        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
         
 @app.route("/user")
@@ -131,19 +131,15 @@ def predict():
     
     one_week_ago = datetime.now(timezone.utc) - timedelta(days=7)
     one_week_ago = str(one_week_ago.strftime('%Y-%m-%dT%H:%M:%SZ'))
-
     total_hour, total_min, total_sec, weekly_training_time = 0, 0, 0, 0
 
-    # TODO
     for activity in client.get_activities(after = one_week_ago, limit=10):
-        # print("{0.moving_time}".format(activity))
         activity_response_array.append("{0.name} {0.moving_time}".format(activity))
-
         [hour, min, sec] = "{0.moving_time}".format(activity).split(":")
         total_hour += int(hour)
         total_min += int(min)
         total_sec += int(sec)
-        weekly_training_time = hour
+        weekly_training_time = round(total_hour + (total_min / 60) + (total_sec / 3600))
         
         # Activities can have many streams, you can request n desired stream types
         stream = client.get_activity_streams(activity.id, types=types, resolution='high')
