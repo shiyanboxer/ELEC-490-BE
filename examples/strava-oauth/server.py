@@ -84,8 +84,8 @@ def logged_in():
             expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        dashboard = 'http://localhost:3000/dashboard/app'
-        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
+        # dashboard = 'http://localhost:3000/dashboard/app'
+        dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
         
 @app.route("/user")
