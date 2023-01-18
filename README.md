@@ -1,86 +1,31 @@
-This repository was forked from [stravalib](https://stravalib.readthedocs.io/) 
+## ELEC 490 Backend
+> **_NOTE:_** API and Database Schema Documentation can be found [here](https://docs.google.com/document/d/1no3cW1rfu7zmcbKZR0VY-XDIb4JYl5ykk_-kTJci6EE/edit?usp=sharing)
 
-# stravalib + ELEC 490 Backend APIs
-[![DOI](https://zenodo.org/badge/8828908.svg)](https://zenodo.org/badge/latestdoi/8828908) 
-![PyPI](https://img.shields.io/pypi/v/stravalib?style=plastic) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/stravalib?style=plastic) [![Documentation Status](https://readthedocs.org/projects/stravalib/badge/?version=latest)](https://stravalib.readthedocs.io/en/latest/?badge=latest) ![Package Tests Status](https://github.com/stravalib/stravalib/actions/workflows/build-test.yml/badge.svg) ![PyPI - Downloads](https://img.shields.io/pypi/dm/stravalib?style=plastic) [![codecov](https://codecov.io/gh/stravalib/stravalib/branch/master/graph/badge.svg?token=sHbFJn7epy)](https://codecov.io/gh/stravalib/stravalib)
+### [API Endpoint](https://elec49x.herokuapp.com/)
+This is the backend component for the recovery tracker. It uses:
+- Python 3.10.5
+- Stavalib
+- pip3
+- requests
+- json
 
+### Stravalib
 The **stravalib** Python package provides easy-to-use tools for accessing and 
 downloading Strava data from the Strava V3 web service. Stravalib provides a Client class that supports:
 * Authenticating with stravalib 
 * Accessing and downloading strava activity, club and profile data 
 * Making changes to account activities 
 
-It also provides support for working with date/time/temporal attributes
-and quantities through the [Python Pint library](https://pypi.org/project/Pint/).
-
-## Dependencies
-
-* Python 3.8+
-* Setuptools for installing dependencies
-* Other Python libraries (installed automatically when using pip/easy_install): requests, pytz, pint, arrow
-
-## Installation
-
-The package is available on PyPI to be installed using `easy_install` or `pip`:
-
-`pip3 install stravalib`
-
-
-### Building from sources
-
-To build the project locally in editable mode,
-access the project root directory and run:
-
-```bash
-$ pip3 install -e .
+### Quick Start
 ```
-
-To execute **unit - or integration tests** you will need to run
-
-```bash
-$ make test
-```
-
-More steps https://pypi.org/project/python-dotenv/
-
-```
-pip3 install python-dotenv
+pip3 install -r requirements.txt.
+create and setup a .env file with Strava access tokens
 python server.py
 ```
 
-## Local Tests 
-To run **end-to-end** tests you will need to rename *test.ini-example* (which you can find *<your-root-proj-dir>*/stravalib/tests/) to *test.ini*
-In *test.ini* provide your *access_token* and *activity_id*. Now you can run
-```
-shell$ pytest stravalib/tests/functional
-```
-
-### Pull Requests and tests
-
-Please add tests that cover your changes, these will greatly reduce the effort of reviewing
-and merging your Pull Requests. In case you need it, there's a pytest fixture
-`mock_strava_api` that is based on `RequestsMock` from the `responses` package. It prevents
-requests being made to the actual Strava API and instead registers responses that are
-based on examples from the published Strava API documentation. Example usages of this
-fixture can be found in the `stravalib.tests.integration` package.
-
-## Basic Usage
-
-Please take a look at the source (in particular the stravalib.client.Client class, if you'd like to play around with the
-API.  Most of the Strava API is implemented at this point; however, certain features such as streams are still on the
-to-do list.
-
 ### Authentication
 
-In order to make use of this library, you will need to create an app in Strava 
-which is free to do. [Have a look at this tutorial for instructions on creating 
-an app with Strava - we will be updating our docs with this information soon.](https://medium.com/analytics-vidhya/accessing-user-data-via-the-strava-api-using-stravalib-d5bee7fdde17)
-
-**NOTE** We will be updating our documentation with clear instructions to support this
-in the upcoming months
-
-Once you have created your app, stravalib have several helper methods to make 
-authentication easier.
+In order to make use of this library, you will need to create an app in Strava. 
 
 ```python
 from stravalib.client import Client
@@ -155,31 +100,4 @@ streams = client.get_activity_streams(123, types=types, resolution='medium')
 if 'altitude' in streams.keys():
     print(streams['altitude'].data)
 
-```
-
-
-### Working with Units
-
-stravalib uses the [python Pint library](https://pypi.org/project/Pint/) to facilitate working
-with the values in the API that have associated units (e.g. distance, speed).  You can use the pint library
-directly or through the `stravalib.unithelper` module for shortcuts
-
-```python
-
-activity = client.get_activity(96089609)
-assert isinstance(activity.distance, unithelper.Quantity)
-print(activity.distance)
-# 22530.80 m
-
-# Meters!?
-
-from stravalib import unithelper
-
-print(unithelper.miles(activity.distance))
-# 14.00 mi
-
-# And to get the number:
-num_value = float(unithelper.miles(activity.distance))
-# Or:
-num_value = unithelper.miles(activity.distance).num
 ```
