@@ -21,6 +21,8 @@ downloading Strava data from the Strava V3 web service. Stravalib provides a Cli
 git clone https://github.com/shiyanboxer/ELEC-490-BE.git
 pip3 install -r requirements.txt.
 create and setup a .env file with Strava access tokens
+brew install mysql
+pip3 install mysqlclient
 python3 server.py
 ```
 

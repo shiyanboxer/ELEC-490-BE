@@ -23,6 +23,7 @@ from dotenv import load_dotenv
 from stravalib import Client
 # Run FE and BE servers at once
 from flask_cors import CORS
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 cors = CORS(app) 
@@ -35,6 +36,17 @@ STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
 
 # Global client object
 client = Client()
+
+# Initialize the MySQL extension
+# https://pypi.org/project/Flask-MySQLdb/
+# https://hevodata.com/learn/flask-mysql/
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = ''
+# app.config['MYSQL_DB'] = 'flask'
+ 
+# mysql = MySQL(app)
+
 
 # Session cookies
 session = collections.defaultdict()
@@ -84,12 +96,26 @@ def logged_in():
             expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        # dashboard = 'http://localhost:3000/dashboard/app'
-        dashboard = 'https://elec49x.netlify.app/dashboard/app'
+        dashboard = 'http://localhost:3000/dashboard/app'
+        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
         
 @app.route("/user")
 def get_user():
+    # #Creating a connection cursor
+    # cursor = mysql.connection.cursor()
+    
+    # #Executing SQL Statements
+    # cursor.execute(''' CREATE TABLE table_name(field1, field2...) ''')
+    # cursor.execute(''' INSERT INTO table_name VALUES(v1,v2...) ''')
+    # cursor.execute(''' DELETE FROM table_name WHERE condition ''')
+    
+    # #Savingx the Actions performed on the DB
+    # mysql.connection.commit()
+    
+    # #Closing the cursor
+    # cursor.close()
+
     user = {
         'first_name': session.get('first_name', 'Fake'), 
         'last_name': session.get('last_name', 'Name')
