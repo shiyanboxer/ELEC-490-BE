@@ -44,6 +44,17 @@ STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
 # Global client object
 client = Client()
 
+# Initialize the MySQL extension
+# https://pypi.org/project/Flask-MySQLdb/
+# https://hevodata.com/learn/flask-mysql/
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = ''
+# app.config['MYSQL_DB'] = 'flask'
+ 
+# mysql = MySQL(app)
+
+
 # Session cookies
 session = collections.defaultdict()
 
