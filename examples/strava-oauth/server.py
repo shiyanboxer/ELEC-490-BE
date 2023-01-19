@@ -23,9 +23,17 @@ from dotenv import load_dotenv
 from stravalib import Client
 # Run FE and BE servers at once
 from flask_cors import CORS
+from flask_mysqldb import MySQL
+ 
+ 
 
 app = Flask(__name__)
 cors = CORS(app) 
+mysql = MySQL(app)
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'mysql'
+app.config['MYSQL_DB'] = 'elec490'
 
 load_dotenv()
 
@@ -84,17 +92,30 @@ def logged_in():
             expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        # dashboard = 'http://localhost:3000/dashboard/app'
+        #dashboard = 'http://localhost:3000/dashboard/app'
         dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
         
 @app.route("/user")
 def get_user():
-    user = {
-        'first_name': session.get('first_name', 'Fake'), 
-        'last_name': session.get('last_name', 'Name')
-    }
-    return jsonify(user)
+    # user = {
+    #     'first_name': session.get('first_name', 'Fake'), 
+    #     'last_name': session.get('last_name', 'Name')
+    # }
+
+    #Creating a connection cursor
+    cursor = mysql.connection.cursor()
+    print(cursor)
+    #Executing SQL Statements
+    #cursor.execute(''' INSERT INTO info_table VALUES(%s,%s, %s)''',(session.get('first_name', 'Fake'),session.get('first_name', 'Fake'), session.get('first_name', 'Fake')))
+    
+    #Saving the Actions performed on the DB
+    mysql.connection.commit()
+    
+    #Closing the cursor
+    cursor.close()
+    return
+    #return jsonify(user)
 
 # def load_models():
 #     """"
