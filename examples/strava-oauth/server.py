@@ -23,17 +23,12 @@ from dotenv import load_dotenv
 from stravalib import Client
 # Run FE and BE servers at once
 from flask_cors import CORS
-from flask_mysqldb import MySQL
- 
- 
+import pymongo 
+import bson.json_util
+import connection as connection
 
 app = Flask(__name__)
 cors = CORS(app) 
-mysql = MySQL(app)
-
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'mysql'
-app.config['MYSQL_DB'] = 'elec490'
 
 load_dotenv()
 
@@ -44,19 +39,20 @@ STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
 # Global client object
 client = Client()
 
-# Initialize the MySQL extension
-# https://pypi.org/project/Flask-MySQLdb/
-# https://hevodata.com/learn/flask-mysql/
-# app.config['MYSQL_HOST'] = 'localhost'
-# app.config['MYSQL_USER'] = 'root'
-# app.config['MYSQL_PASSWORD'] = ''
-# app.config['MYSQL_DB'] = 'flask'
- 
-# mysql = MySQL(app)
-
-
 # Session cookies
 session = collections.defaultdict()
+
+# Connect to database
+db = connection.connect_db()
+
+# Default user
+CURRENT_USER = {
+    '_id': '63dbe6a0ac0494f8e62166f6',
+    'first_name': 'Shiyan',
+    'last_name': 'Boxer',
+    # 'recommendation': [{'date': datetime.date(2022, 9, 11, 20, 14, 14, 796000), 'recommendation_txt': 'workout more'}],
+    # 'recovery': [{'date': datetime.date(2022, 9, 11, 20, 14, 14, 796000), 'recovery_score': 40, 'hrv': 30}]
+}
 
 @app.route("/")
 def login():
@@ -106,27 +102,20 @@ def logged_in():
         #dashboard = 'http://localhost:3000/dashboard/app'
         dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
-        
+
 @app.route("/user")
 def get_user():
-    # user = {
-    #     'first_name': session.get('first_name', 'Fake'), 
-    #     'last_name': session.get('last_name', 'Name')
-    # }
+    find_by_name = { 
+        "first_name": session.get('first_name', 'Fake'), 
+        "last_name": session.get('last_name', 'Name')
+    }
+    users = db.find(find_by_name)
 
-    #Creating a connection cursor
-    cursor = mysql.connection.cursor()
-    print(cursor)
-    #Executing SQL Statements
-    #cursor.execute(''' INSERT INTO info_table VALUES(%s,%s, %s)''',(session.get('first_name', 'Fake'),session.get('first_name', 'Fake'), session.get('first_name', 'Fake')))
-    
-    #Saving the Actions performed on the DB
-    mysql.connection.commit()
-    
-    #Closing the cursor
-    cursor.close()
-    return
-    #return jsonify(user)
+    for user in users:
+        print(user)
+
+    CURRENT_USER = json.loads(bson.json_util.dumps(user))
+    return json.loads(bson.json_util.dumps(user))
 
 # def load_models():
 #     """"
@@ -193,11 +182,6 @@ def predict():
     # model = load_models() # Get an instance of the model calling the load_models()
     data = json.loads(request.data) # Load the request from the user and store in the variable "data"
     hrv = data['hrv']
-
-    # Raises a 400 error if invalid input
-    # if not hrv.isdigit():
-    #     return 'User entered invalid input type', 400
-
     response['hrv'] = int(hrv)
 
     # x_test = np.array([hrv]) # Create a X_test variable of the user's input
