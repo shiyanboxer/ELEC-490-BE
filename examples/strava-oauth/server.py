@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 from stravalib import Client
 # Run FE and BE servers at once
 from flask_cors import CORS
-# import pymongo 
+import pymongo
 # import bson.json_util
 # import connection as connection
 
