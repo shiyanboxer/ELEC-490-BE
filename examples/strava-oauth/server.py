@@ -43,7 +43,7 @@ client = Client()
 session = collections.defaultdict()
 
 # Connect to database
-db = connection.connect_db()
+# db = connection.connect_db()
 
 # Default user
 CURRENT_USER = {
