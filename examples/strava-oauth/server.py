@@ -42,16 +42,16 @@ client = Client()
 session = collections.defaultdict()
 
 # Connect to database
-# db = connection.connect_db()
+db = connection.connect_db()
 
 # Default user
-# CURRENT_USER = {
-#     '_id': '63dbe6a0ac0494f8e62166f6',
-#     'first_name': 'Shiyan',
-#     'last_name': 'Boxer',
-#     # 'recommendation': [{'date': datetime.date(2022, 9, 11, 20, 14, 14, 796000), 'recommendation_txt': 'workout more'}],
-#     # 'recovery': [{'date': datetime.date(2022, 9, 11, 20, 14, 14, 796000), 'recovery_score': 40, 'hrv': 30}]
-# }
+CURRENT_USER = {
+    '_id': '63dbe6a0ac0494f8e62166f6',
+    'first_name': 'Shiyan',
+    'last_name': 'Boxer',
+    'recommendation': [{'date': datetime.date(2022, 9, 11, 20, 14, 14, 796000), 'recommendation_txt': 'workout more'}],
+    'recovery': [{'date': datetime.date(2022, 9, 11, 20, 14, 14, 796000), 'recovery_score': 40, 'hrv': 30}]
+}
 
 @app.route("/")
 def login():
@@ -102,28 +102,28 @@ def logged_in():
         dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
 
-# # @app.route("/user")
-# # def get_user():
-# #     find_by_name = { 
-# #         "first_name": session.get('first_name', 'Fake'), 
-# #         "last_name": session.get('last_name', 'Name')
-# #     }
-# #     users = db.find(find_by_name)
+@app.route("/user")
+def get_user():
+    find_by_name = { 
+        "first_name": session.get('first_name', 'Fake'), 
+        "last_name": session.get('last_name', 'Name')
+    }
+    users = db.find(find_by_name)
 
-# #     for user in users:
-# #         print(user)
-# #     return json.loads(bson.json_util.dumps(user))
+    for user in users:
+        print(user)
+    return json.loads(bson.json_util.dumps(user))
 
-# # def load_models():
-# #     """"
-# #     Take the pickled model file, and open and load it into a variable called "model" 
-# #     Return: "model", an object of our model
-# #     """
-# #     file_name = "examples/strava-oauth/model_file.p"
-# #     with open(file_name, 'rb') as pickled:
-# #         data = pickle.load(pickled)
-# #         model = data['model']
-# #     return model  
+def load_models():
+    """"
+    Take the pickled model file, and open and load it into a variable called "model" 
+    Return: "model", an object of our model
+    """
+    file_name = "examples/strava-oauth/model_file.p"
+    with open(file_name, 'rb') as pickled:
+        data = pickle.load(pickled)
+        model = data['model']
+    return model  
 
 
 @app.route("/predict", methods=["POST"])
@@ -169,7 +169,6 @@ def predict():
             for bpm in stream['heartrate'].data:
                 total_bmp += bpm
                 count += 1
-            # print(stream['heartrate'].data)
             heartrate_response_array.append(round(total_bmp/count))
     
     response['heartrate_response'] = heartrate_response_array[-1] if heartrate_response_array else 0
@@ -188,8 +187,6 @@ def predict():
     # response['recover_recommendation']
 
     response = json.dumps(response)
-    print(response)
-
     return json.dumps(response)
 
 if __name__ == '__main__':
