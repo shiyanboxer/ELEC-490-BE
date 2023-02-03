@@ -103,17 +103,17 @@ def logged_in():
         dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
 
-@app.route("/user")
-def get_user():
-    find_by_name = { 
-        "first_name": session.get('first_name', 'Fake'), 
-        "last_name": session.get('last_name', 'Name')
-    }
-    users = db.find(find_by_name)
+# @app.route("/user")
+# def get_user():
+#     find_by_name = { 
+#         "first_name": session.get('first_name', 'Fake'), 
+#         "last_name": session.get('last_name', 'Name')
+#     }
+#     users = db.find(find_by_name)
 
-    for user in users:
-        print(user)
-    return json.loads(bson.json_util.dumps(user))
+#     for user in users:
+#         print(user)
+#     return json.loads(bson.json_util.dumps(user))
 
 # def load_models():
 #     """"
