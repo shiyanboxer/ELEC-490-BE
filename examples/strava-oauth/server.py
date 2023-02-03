@@ -25,7 +25,7 @@ from stravalib import Client
 from flask_cors import CORS
 import pymongo 
 import bson.json_util
-import connection as connection
+# import connection as connection
 
 app = Flask(__name__)
 cors = CORS(app) 
