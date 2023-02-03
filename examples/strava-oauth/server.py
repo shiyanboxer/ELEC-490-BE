@@ -99,7 +99,7 @@ def logged_in():
             expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        #dashboard = 'http://localhost:3000/dashboard/app'
+        # dashboard = 'http://localhost:3000/dashboard/app'
         dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
 
@@ -113,8 +113,6 @@ def get_user():
 
     for user in users:
         print(user)
-
-    CURRENT_USER = json.loads(bson.json_util.dumps(user))
     return json.loads(bson.json_util.dumps(user))
 
 # def load_models():
