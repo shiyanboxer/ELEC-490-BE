@@ -44,14 +44,6 @@ session = collections.defaultdict()
 # Connect to database
 db = connection.connect_db()
 
-# Default user
-CURRENT_USER = {
-    '_id': '63dbe6a0ac0494f8e62166f6',
-    'first_name': 'Shiyan',
-    'last_name': 'Boxer',
-    'recommendation': [{'date': datetime.date(2022, 9, 11, 20, 14, 14, 796000), 'recommendation_txt': 'workout more'}],
-    'recovery': [{'date': datetime.date(2022, 9, 11, 20, 14, 14, 796000), 'recovery_score': 40, 'hrv': 30}]
-}
 
 @app.route("/")
 def login():
@@ -98,8 +90,8 @@ def logged_in():
             expires_at = refresh_response['expires_at']
 
         # return render_template('login_results.html', athlete=strava_athlete, access_token=access_token)
-        # dashboard = 'http://localhost:3000/dashboard/app'
-        dashboard = 'https://elec49x.netlify.app/dashboard/app'
+        dashboard = 'http://localhost:3000/dashboard/app'
+        # dashboard = 'https://elec49x.netlify.app/dashboard/app'
         return redirect(dashboard)
 
 @app.route("/user")
@@ -183,9 +175,34 @@ def predict():
     # x_test = np.array([hrv]) # Create a X_test variable of the user's input
     # recovery_score = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
     response['recovery_score'] = 23 # Dump the result to be sent back to the frontend
-    
-    # response['recover_recommendation']
+    response['recommendation_txt'] = "Do better"
 
+    find_by_name = { 
+        "first_name": session.get('first_name', 'Fake'), 
+        "last_name": session.get('last_name', 'Name')
+    }
+    
+    user = db.find_one(find_by_name)    
+    if user is None:
+        # Return error if document does not exist
+        return 'Document with specified first and last name does not exist', 400
+    
+    # Add new heart rate value to the existing heart rate array
+    new_heart_rate = response['heartrate_response']
+    db.update_one({'_id': user['_id']}, {'$push': {'heart_rate': new_heart_rate}})
+    
+    # Add new weekly training value to the existing weekly training array
+    new_weekly_training = response['weekly_training_time_response']
+    db.update_one({'_id': user['_id']}, {'$push': {'weekly_training': new_weekly_training}})
+
+    # Add new recovery object to the existing recovery list
+    new_recovery = {'date': datetime.now(), 'recovery_score': response['recovery_score'], 'hrv': hrv}
+    db.update_one({'_id': user['_id']}, {'$push': {'recovery': new_recovery}})
+
+    # Add new recommendation object to the existing recommendation list
+    new_recommendation = {'date': datetime.now(), 'recommendation_txt': response['recommendation_txt']}
+    db.update_one({'_id': user['_id']}, {'$push': {'recommendation': new_recommendation}})
+    
     response = json.dumps(response)
     return json.dumps(response)
 
