@@ -104,18 +104,19 @@ def get_user():
 
     for user in users:
         print(user)
-    return json.loads(bson.json_util.dumps(user))
+    # return json.loads(bson.json_util.dumps(user))
+    return
 
-def load_models():
-    """"
-    Take the pickled model file, and open and load it into a variable called "model" 
-    Return: "model", an object of our model
-    """
-    file_name = "examples/strava-oauth/model_file.p"
-    with open(file_name, 'rb') as pickled:
-        data = pickle.load(pickled)
-        model = data['model']
-    return model  
+# def load_models():
+#     """"
+#     Take the pickled model file, and open and load it into a variable called "model" 
+#     Return: "model", an object of our model
+#     """
+#     file_name = "examples/strava-oauth/model_file.p"
+#     with open(file_name, 'rb') as pickled:
+#         data = pickle.load(pickled)
+#         model = data['model']
+#     return model  
 
 
 @app.route("/predict", methods=["POST"])
