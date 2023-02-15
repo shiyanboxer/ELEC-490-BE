@@ -7,7 +7,6 @@
 # https://dev.to/vulcanwm/environment-variables-in-heroku-python-385o
 #!flask/bin/python
 
-
 from datetime import datetime, timezone, timedelta
 import logging
 import re
