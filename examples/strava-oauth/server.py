@@ -25,12 +25,14 @@ from stravalib import Client
 from flask_cors import CORS
 import bson.json_util
 import connection as connection
+import openai
 
 app = Flask(__name__)
 cors = CORS(app) 
 
 load_dotenv()
 
+openai.api_key = os.getenv("OPENAI_API_KEY")
 STRAVA_REFRESH_TOKEN=os.getenv('STRAVA_REFRESH_TOKEN')
 STRAVA_CLIENT_ID = os.getenv('STRAVA_CLIENT_ID')
 STRAVA_CLIENT_SECRET= os.getenv('STRAVA_CLIENT_SECRET')
@@ -130,6 +132,17 @@ def get_user():
 #         model = data['model']
 #     return model
 
+# Helper function for recommendation model
+def generate_prompt(hrv):
+    return """Generate single-line training recommendations for a pro cyclist given their HRV value
+    HRV: 65
+    Recommendation: Work on your aerobic capacity by doing long-distance rides and incorporating tempo rides.
+    HRV: 10
+    Recommendation: Take a rest day
+    HRV: {}
+    Recommendation:""".format(
+        hrv.capitalize()
+    )
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -187,8 +200,19 @@ def predict():
     hrv = data['hrv']
     response['hrv'] = int(hrv)
 
+    hrv_recommendation = hrv
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=generate_prompt(hrv),
+        temperature=0.6,
+    )
+    recommendation =response.choices[0].text  
+
     # x_test = np.array([hrv]) # Create a X_test variable of the user's input
     # recovery_score = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
+    # response['recovery_score'] = recovery_score # Dump the result to be sent back to the frontend
+    # response['recommendation_txt'] = recommendation
+
     response['recovery_score'] = 66 # Dump the result to be sent back to the frontend
     response['recommendation_txt'] = "Do better"
 
