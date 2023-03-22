@@ -121,16 +121,17 @@ def get_user():
     else:
         return jsonify({"error": "User not found"})
 
-# def load_models():
-#     """"
-#     Take the pickled model file, and open and load it into a variable called "model"
-#     Return: "model", an object of our model
-#     """
-#     file_name = "examples/strava-oauth/model_file.p"
-#     with open(file_name, 'rb') as pickled:
-#         data = pickle.load(pickled)
-#         model = data['model']
-#     return model
+# Load pickled model file
+def load_models():
+    """"
+    Take the pickled model file, and open and load it into a variable called "model"
+    Return: "model", an object of our model
+    """
+    file_name = "examples/strava-oauth/model_file.p"
+    with open(file_name, 'rb') as pickled:
+        data = pickle.load(pickled)
+        model = data['model']
+    return model
 
 # Helper function for recommendation model
 def generate_prompt(hrv):
@@ -195,7 +196,7 @@ def predict():
     response['activity_response'] = activity_response_array
     response['weekly_training_time_response'] = weekly_training_time
 
-    # model = load_models() # Get an instance of the model calling the load_models()
+    model = load_models() # Get an instance of the model calling the load_models()
     data = json.loads(request.data) # Load the request from the user and store in the variable "data"
     hrv = data['hrv']
     response['hrv'] = int(hrv)
@@ -208,13 +209,13 @@ def predict():
     )
     recommendation =response.choices[0].text  
 
-    # x_test = np.array([hrv]) # Create a X_test variable of the user's input
-    # recovery_score = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
-    # response['recovery_score'] = recovery_score # Dump the result to be sent back to the frontend
-    # response['recommendation_txt'] = recommendation
+    x_test = np.array([hrv]) # Create a X_test variable of the user's input
+    recovery_score = model.predict(x_test.reshape(1, -1)) # Use the the  X_test to to predict the success using the  predict()
+    response['recovery_score'] = recovery_score # Dump the result to be sent back to the frontend
+    response['recommendation_txt'] = recommendation
 
-    response['recovery_score'] = 66 # Dump the result to be sent back to the frontend
-    response['recommendation_txt'] = "Do better"
+    # response['recovery_score'] = 66 # Dump the result to be sent back to the frontend
+    # response['recommendation_txt'] = "Do better"
 
     find_by_name = {
         "first_name": session.get('first_name', 'Fake'),
