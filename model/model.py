@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 import csv
-
+from sklearn.metrics import accuracy_score
+import pickle
 
 def training_data(file_name):
     data_frame = pd.read_csv(file_name)
@@ -77,8 +78,6 @@ def training_data(file_name):
 
                 e_valFAT = math.exp((-(i - j) / h_decay))
                 sum_valFAT += temp_intensity * e_valFAT
-
-
 
         temp_form = p_intercept + (g_scaling*sum_valFIT)-(h_scaling*sum_valFAT)
         sum_valFAT=0
@@ -155,8 +154,6 @@ def save_form_data_to_csv(form1, form2, form3, form4):
         writer.writerow(['Index', 'Form1', 'Form2', 'Form3', 'Form4'])
         writer.writerows(data)
 
-
-
 form1 = training_data('Emma20-21.csv')
 form2 = training_data('Emma21-22.csv')
 form3 = training_data('Jack20-21.csv')
@@ -204,8 +201,6 @@ plt.plot(form4, label = 'Form4')
 
 save_form_data_to_csv(form1, form2, form3, form4)
 
-
-
 #plt.plot(form1, label = 'Form1')
 #plt.plot(form2, label = 'Form2')
 #plt.plot(form3, label = 'Form3')
@@ -241,9 +236,6 @@ for i in range(366):
     #training_form[counter, 1] = i
     #counter += 1
 
-
-
-
 # Extract the x and y values from the training data set
 x = training_form[:, 1].reshape(-1, 1)
 y = training_form[:, 0].reshape(-1, 1)
@@ -274,6 +266,15 @@ plt.scatter(x, y, color='red')
 plt.plot(x, y_pred, color='blue')
 plt.show()
 
+# Test accuracy - TODO
+# accuracy_score(y_test, np.around(model.predict(X_test),0))
 
+# Pickle the model so it can be loaded in the Flask API
+pickl = {'model': reg.fit(x, y)}
+pickle.dump( pickl, open( 'model_file' + ".p", "wb" ) )
 
+file_name = "model_file.p"
+with open(file_name, 'rb') as pickled:
+    data = pickle.load(pickled)
+    model = data['model']
 
